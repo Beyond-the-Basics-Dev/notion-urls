@@ -10,13 +10,12 @@ export function getSlugWithId({ title, id }: { title: string; id: string }) {
     throw new Error("Title and ID are required");
   }
 
-  // Trim the title for any leading/trailing spaces
-  // Replace special characters and spaces with hyphens
-  // Trim any leading/trailing hyphens
   const slugifiedTitle = title
-    .trim()
-    .replace(/[^a-zA-Z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .trim() // Trim the title for any leading/trailing spaces
+    .replace(/[^a-zA-Z0-9]+/g, "-") // Replace special characters and spaces with hyphens
+    .replace(/^-+|-+$/g, ""); // Trim any leading/trailing hyphens
+  // You can lowercase the title too
+  // I chose not to, to stay in parity with Notion's approach
 
   // Ensure we have valid content before creating slug
   if (!slugifiedTitle) {
@@ -43,7 +42,7 @@ export function extractPostId(slugOrId: string): string {
 
   // Optional: Add validation for expected ID format
   // For example, if IDs should be 12 characters:
-  if (!/^[a-f0-9]{12}$/.test(id)) {
+  if (!/^[a-z0-9]{12}$/.test(id)) {
     throw new Error("Invalid post ID format");
   }
 
