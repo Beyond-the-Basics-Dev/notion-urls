@@ -1,37 +1,58 @@
 import {
   isRouteErrorResponse,
   Link,
+  redirect,
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
-import { redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { posts } from "../data/posts";
-import { getSlugWithId } from "../utils/post-slug";
+import { extractPostId, getPostById, getSlugWithId } from "../utils/posts";
 
-export const loader = ({ params }: LoaderFunctionArgs) => {
+export async function loader({ params }: LoaderFunctionArgs) {
   const postIdRaw = params.postId;
   if (!postIdRaw) {
     throw new Response("Not Found", { status: 404 });
   }
 
+  // Check if we need to redirect
   if (!postIdRaw.includes("-")) {
-    // post id doesn't have slug, redirect to the post with slug
-    const post = posts.find((post) => post.id === postIdRaw);
+    // Attempt to fetch post details
+    const post = getPostById(postIdRaw);
+
     if (!post) {
-      throw new Response("Not Found", { status: 404 });
+      throw new Response("Post not found", {
+        status: 404,
+        statusText: "Not Found",
+      });
     }
-    return redirect(`/${getSlugWithId(post)}`);
+
+    // Generate new slug and redirect
+    const newSlug = getSlugWithId(post);
+
+    // Add cache headers for better performance
+    return redirect(`/${newSlug}`, {
+      headers: {
+        "Cache-Control": "public, max-age=3600",
+        "X-Redirected-From": postIdRaw,
+      },
+    });
   }
 
-  const postId = postIdRaw.split("-").at(-1);
-  const post = posts.find((post) => post.id === postId);
+  let postId: string;
+  try {
+    postId = extractPostId(postIdRaw);
+  } catch (error) {
+    // Handle error appropriately
+    throw new Response("Invalid Post ID", { status: 400 });
+  }
+
+  const post = getPostById(postId);
   if (!post) {
     throw new Response("Not Found", { status: 404 });
   }
 
   return { post };
-};
+}
 
 export default function Post() {
   const { post } = useLoaderData<typeof loader>();

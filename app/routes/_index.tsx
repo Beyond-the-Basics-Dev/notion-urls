@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { posts as postsData, type PostWithoutContent } from "../data/posts";
-import { getSlugWithId } from "../utils/post-slug";
+import { getSlugWithId } from "../utils/posts";
 
 export const meta: MetaFunction = () => {
   return [

@@ -6,27 +6,27 @@ export const posts = [
   },
   {
     id: "bbccddeeffaa",
-    title: "Second Post",
+    title: "It's a Second Post",
     content: "This is the content of my second post.",
   },
   {
     id: "ccddeeffaabb",
-    title: "Third Post",
+    title: "3rd Post",
     content: "This is the content of my third post.",
   },
   {
     id: "ddeeffaabbcc",
-    title: "Fourth Post",
+    title: "Fourth Post: A subtitle",
     content: "This is the content of my fourth post.",
   },
   {
     id: "eeffaabbccdd",
-    title: "Fifth Post",
+    title: "Fifth Post || This is a test",
     content: "This is the content of my fifth post.",
   },
   {
     id: "ffaabbccddee",
-    title: "Sixth Post",
+    title: "-Sixth Post-",
     content: "This is the content of my sixth post.",
   },
 ];
