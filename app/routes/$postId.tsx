@@ -29,13 +29,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
     // Generate new slug and redirect
     const newSlug = getSlugWithId(post);
 
-    // Add cache headers for better performance
-    return redirect(`/${newSlug}`, {
-      headers: {
-        "Cache-Control": "public, max-age=3600",
-        "X-Redirected-From": postIdRaw,
-      },
-    });
+    // Check if the new slug is different
+    if (newSlug !== postIdRaw) {
+      return redirect(`/${newSlug}`);
+    }
   }
 
   let postId: string;
@@ -86,14 +83,32 @@ export default function Post() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  console.error(error);
+
   if (isRouteErrorResponse(error)) {
     if (error.status === 404) {
-      return <div>Post not found</div>;
+      return (
+        <main className="flex h-screen items-center justify-center">
+          Post not found
+        </main>
+      );
     }
-    return <div>An error occurred: {error.statusText}</div>;
+    return (
+      <main className="flex h-screen items-center justify-center">
+        An error occurred: {error.statusText}
+      </main>
+    );
   } else if (error instanceof Error) {
-    return <div>An error occurred: {error.message}</div>;
+    return (
+      <main className="flex h-screen items-center justify-center">
+        An error occurred: {error.message}
+      </main>
+    );
   } else {
-    return <div>An error occurred</div>;
+    return (
+      <main className="flex h-screen items-center justify-center">
+        An error occurred
+      </main>
+    );
   }
 }
